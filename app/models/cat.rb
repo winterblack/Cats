@@ -13,11 +13,12 @@
 #
 
 class Cat < ActiveRecord::Base
-  validates :birth_date, :color, :name, :sex, presence: true
+  validates :birth_date, :color, :name, :sex, :owner, presence: true
   validates :color, inclusion: { in: %w(black white red blue calico tabby)}
   validates :sex, inclusion: { in: %w(M F)}
   include ActionView::Helpers::DateHelper
   has_many :cat_rental_requests, dependent: :destroy
+  belongs_to :owner, foreign_key: :user_id, class_name: "User"
 
   def age
     time_ago_in_words(birth_date)

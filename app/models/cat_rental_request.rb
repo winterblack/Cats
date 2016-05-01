@@ -13,9 +13,10 @@
 
 class CatRentalRequest < ActiveRecord::Base
   validates :status, inclusion: {in: %w(PENDING APPROVED DENIED)}
-  validates :cat_id, :start_date, :end_date, :status, presence: true
+  validates :start_date, :end_date, :status, :user_id, presence: true
   validate :does_not_overlap_approved_request
   belongs_to :cat
+  belongs_to :user
 
   def approve!
     transaction do

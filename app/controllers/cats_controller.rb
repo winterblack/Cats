@@ -1,9 +1,11 @@
 class CatsController < ApplicationController
-  before_action :set_cat, only: [:show, :edit, :update, :destroy]
+  before_action :set_cat, except: [:index, :new, :create]
+  before_action :require_user,except: [:index, :show, :new, :create]
 
   # GET /cats
   # GET /cats.json
   def index
+    redirect_to new_session_url unless current_user
     @cats = Cat.all
   end
 
@@ -25,15 +27,12 @@ class CatsController < ApplicationController
   # POST /cats.json
   def create
     @cat = Cat.new(cat_params)
-
-    respond_to do |format|
-      if @cat.save
-        format.html { redirect_to @cat, notice: 'Cat was successfully created.' }
-        format.json { render :show, status: :created, location: @cat }
-      else
-        format.html { render :new }
-        format.json { render json: @cat.errors, status: :unprocessable_entity }
-      end
+    @cat.user_id = current_user.id
+    if @cat.save
+      redirect_to cats_url(@cat)
+    else
+      flash.now[:errors] = @cat.errors.full_messages
+      render :new
     end
   end
 
@@ -61,6 +60,12 @@ class CatsController < ApplicationController
     end
   end
 
+  def require_user
+    unless @cat.user_id == current_user.id
+      redirect_to cats_url
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_cat
@@ -69,6 +74,7 @@ class CatsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def cat_params
-      params.require(:cat).permit(:birth_date, :color, :name, :sex, :description)
+      params.require(:cat)
+            .permit(:birth_date, :color, :name, :sex, :description, :owner)
     end
 end

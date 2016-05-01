@@ -26,15 +26,12 @@ class CatRentalRequestsController < ApplicationController
   # POST /cat_rental_requests.json
   def create
     @cat_rental_request = CatRentalRequest.new(cat_rental_request_params)
-
-    respond_to do |format|
-      if @cat_rental_request.save
-        format.html { redirect_to @cat_rental_request, notice: 'Cat rental request was successfully created.' }
-        format.json { render :show, status: :created, location: @cat_rental_request }
-      else
-        format.html { render :new }
-        format.json { render json: @cat_rental_request.errors, status: :unprocessable_entity }
-      end
+    @cat_rental_request.user_id = current_user.id
+    if @cat_rental_request.save
+      redirect_to cat_url(@cat_rental_request.cat)
+    else
+      flash.now[:errors] = @cat_rental_request.errors.full_messages
+      render :new
     end
   end
 

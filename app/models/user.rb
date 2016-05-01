@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
   validates :session_token, :username, uniqueness: true
   validates :password, length: { minimum: 6, allow_nil: true}
   attr_reader :password
+  has_many :cats
+  has_many :cat_rental_requests
 
   def self.find_by_credentials(username, password)
     user = User.find_by_username(username)

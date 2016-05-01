@@ -1,19 +1,8 @@
 <%= form_for(@cat_rental_request) do |f| %>
-  <% if @cat_rental_request.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@cat_rental_request.errors.count, "error") %> prohibited this cat_rental_request from being saved:</h2>
-
-      <ul>
-      <% @cat_rental_request.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
 
   <div class="field">
-    <%= f.label :cat_id, "Cat ID" %><br>
-    <%= f.number_field :cat_id %>
+    <%= f.label :cat_id, "Cat" %><br>
+    <%= f.select :cat_id, Cat.all.collect {|cat| [cat.name, cat.id]} %>
   </div>
   <div class="field">
     <%= f.label :start_date %><br>
@@ -24,6 +13,6 @@
     <%= f.date_select :end_date %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Request Rental" %>
   </div>
 <% end %>
