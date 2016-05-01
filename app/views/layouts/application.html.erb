@@ -8,6 +8,26 @@
 </head>
 <body>
 
+<% if current_user %>
+  <%= current_user.username %>
+  <%= button_to "Sign Out", session_url, method: :delete %>
+<% else %>
+  <%= button_to "Log In", new_session_url, method: :get %>
+  <%= button_to "Sign Up", new_user_url, method: :get %>
+<% end %>
+
+<% if flash[:errors] %>
+  <div id="error_explanation">
+    <h2><%= pluralize(flash[:errors].count, "error") %> prohibited this user from being saved:</h2>
+
+    <ul>
+    <% flash[:errors].each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <%= yield %>
 
 </body>
